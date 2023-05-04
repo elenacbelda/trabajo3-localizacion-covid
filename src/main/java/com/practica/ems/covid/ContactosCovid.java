@@ -114,9 +114,7 @@ public class ContactosCovid {
 				datas = dividirEntrada(data.trim());
 				for (String linea : datas) {
 					String datos[] = this.dividirLineaData(linea);
-					if (!datos[0].equals("PERSONA") && !datos[0].equals("LOCALIZACION")) {
-						throw new EmsInvalidTypeException();
-					}
+
 					if (datos[0].equals("PERSONA")) {
 						if (datos.length != Constantes.MAX_DATOS_PERSONA) {
 							throw new EmsInvalidNumberOfDataException("El número de datos para PERSONA es menor de 8");
@@ -153,10 +151,18 @@ public class ContactosCovid {
 	}
 	public void Resetear(boolean reset){
 		if (reset) {
-			this.poblacion = new Poblacion();
-			this.localizacion = new Localizacion();
-			this.listaContactos = new ListaContactos();
+			new ContactosCovid();
 		}
+	}
+	public void Comparar(String datos){
+		try {
+			if (!datos.equals("PERSONA") && !datos.equals("LOCALIZACION")) {
+				throw new EmsInvalidTypeException();
+			}
+		}
+		catch(Exception ex){
+				ex.printStackTrace();
+			}
 	}
 	public int findPersona(String documento) throws EmsPersonNotFoundException {
 		int pos;
