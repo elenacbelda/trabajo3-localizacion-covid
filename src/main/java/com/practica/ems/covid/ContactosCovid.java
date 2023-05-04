@@ -104,10 +104,10 @@ public class ContactosCovid {
 			File archivo = new File(fichero);
 			fr = new FileReader(archivo);
 			BufferedReader br = new BufferedReader(fr);
-			Resetear(reset);
+			if(reset){resetear(reset);}
 			/**
-			 * Lectura del fichero	línea a línea. Compruebo que cada línea 
-			 * tiene el tipo PERSONA o LOCALIZACION y cargo la línea de datos en la 
+			 * Lectura del fichero	línea a línea. Compruebo que cada línea
+			 * tiene el tipo PERSONA o LOCALIZACION y cargo la línea de datos en la
 			 * lista correspondiente. Sino viene ninguno de esos tipos lanzo una excepción
 			 */
 			while ((data = br.readLine()) != null) {
@@ -149,20 +149,30 @@ public class ContactosCovid {
 			}
 		}
 	}
-	public void Resetear(boolean reset){
-		if (reset) {
-			new ContactosCovid();
-		}
+	public void resetear(boolean reset){
+		this.poblacion = new Poblacion();
+		this.localizacion = new Localizacion();
+		this.listaContactos = new ListaContactos();
+
 	}
-	public void Comparar(String datos){
-		try {
-			if (!datos.equals("PERSONA") && !datos.equals("LOCALIZACION")) {
-				throw new EmsInvalidTypeException();
-			}
-		}
-		catch(Exception ex){
-				ex.printStackTrace();
-			}
+	public void comparar(String linea) throws
+			EmsInvalidTypeException, EmsInvalidNumberOfDataException, EmsDuplicatePersonException, EmsDuplicateLocationException {
+			String datos[] = ContactosCovid.dividirLineaData(linea);
+			if (datos.equals("PERSONA")) {
+				if (datos.length != Constantes.MAX_DATOS_PERSONA) {
+					throw new EmsInvalidNumberOfDataException("El número de datos para PERSONA es menor de 8");
+				}
+				this.poblacion.addPersona(this.crearPersona(datos));
+			} else if (datos.equals("LOCALIZACION")) {
+				if (datos.length != Constantes.MAX_DATOS_LOCALIZACION) {
+					throw new EmsInvalidNumberOfDataException(
+							"El número de datos para LOCALIZACION es menor de 6");
+				}
+
+			} else {
+
+					throw new EmsInvalidTypeException();
+				}
 	}
 	public int findPersona(String documento) throws EmsPersonNotFoundException {
 		int pos;
@@ -224,9 +234,8 @@ public class ContactosCovid {
 		return cadenas;
 	}
 
-	private String[] dividirLineaData(String data) {
-		String cadenas[] = data.split("\\;");
-		return cadenas;
+	private static String[] dividirLineaData(String data) {
+		return data.split("\\;");
 	}
 
 	private Persona crearPersona(String[] data) {
