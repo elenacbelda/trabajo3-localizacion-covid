@@ -30,20 +30,11 @@ public class ListaContactos {
 				NodoPosicion npAnt = null;
 				boolean npEncontrado = false;
 				while (npActual != null && !npEncontrado) {
-					if (npActual.getCoordenada().equals(p.getCoordenada())) {
-						npEncontrado = true;
-						npActual.setNumPersonas(npActual.getNumPersonas() + 1);
-					} else {
-						npAnt = npActual;
-						npActual = npActual.getSiguiente();
-					}
+					compararCoordenadasActual(p,npActual,npAnt,npEncontrado);
 				}
 				if (!npEncontrado) {
 					NodoPosicion npNuevo = new NodoPosicion(p.getCoordenada(), 1, null);
-					if (aux.getListaCoordenadas() == null)
-						aux.setListaCoordenadas(npNuevo);
-					else
-						npAnt.setSiguiente(npNuevo);
+					npNoEncontrado(npNuevo,aux,npAnt);
 				}
 			} else if (aux.getFecha().compareTo(p.getFechaPosicion()) < 0) {
 				ant = aux;
@@ -65,20 +56,11 @@ public class ListaContactos {
 			NodoPosicion npAnt = null;
 			boolean npEncontrado = false;
 			while (npActual != null && !npEncontrado) {
-				if (npActual.getCoordenada().equals(p.getCoordenada())) {
-					npEncontrado = true;
-					npActual.setNumPersonas(npActual.getNumPersonas() + 1);
-				} else {
-					npAnt = npActual;
-					npActual = npActual.getSiguiente();
-				}
+				compararCoordenadasActual(p,npActual,npAnt,npEncontrado);
 			}
 			if (!npEncontrado) {
 				NodoPosicion npNuevo = new NodoPosicion(p.getCoordenada(), 1, null);
-				if (nuevo.getListaCoordenadas() == null)
-					nuevo.setListaCoordenadas(npNuevo);
-				else
-					npAnt.setSiguiente(npNuevo);
+				npNoEncontrado(npNuevo,nuevo,npAnt);
 			}
 
 			if (ant != null) {
@@ -91,6 +73,24 @@ public class ListaContactos {
 			this.size++;
 
 		}
+	}
+
+	private void compararCoordenadasActual(PosicionPersona p, NodoPosicion npActual, NodoPosicion npAnt, boolean npEncontrado){
+		if (npActual.getCoordenada().equals(p.getCoordenada())) {
+			npEncontrado = true;
+			npActual.setNumPersonas(npActual.getNumPersonas() + 1);
+		} else {
+			npAnt = npActual;
+			npActual = npActual.getSiguiente();
+		}
+
+	}
+
+	private void npNoEncontrado(NodoPosicion npNuevo, NodoTemporal nuevo, NodoPosicion npAnt){
+		if (nuevo.getListaCoordenadas() == null)
+			nuevo.setListaCoordenadas(npNuevo);
+		else
+			npAnt.setSiguiente(npNuevo);
 	}
 	public int tamanioLista () {
 		return this.size;
